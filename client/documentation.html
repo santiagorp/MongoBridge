@@ -1,0 +1,209 @@
+<html>
+<head>
+  <title>MongoBridge webtask client</title>
+ <link rel="stylesheet" href="css/site.css">
+ <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/materialize/0.97.7/css/materialize.min.css">
+ <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+ <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.1.0/jquery.min.js"></script>
+ <script src="https://cdnjs.cloudflare.com/ajax/libs/knockout/3.4.0/knockout-min.js"></script>
+ <script src="https://cdnjs.cloudflare.com/ajax/libs/knockout.mapping/2.4.1/knockout.mapping.min.js"></script>
+ <script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/0.97.7/js/materialize.min.js"></script>
+ <script src="js/mongoBridgeClient.js"></script>
+ <script src="js/inspector.js"></script>
+</head>
+<body>
+    <div class="container documentation">
+      <nav>
+        <div class="nav-wrapper blue-grey">
+          <a href="index.html" class="brand-logo">MongoBridge demo</a>
+          <ul id="nav-mobile" class="right hide-on-med-and-down">
+            <li><a href="documentation.html">Documentation</a></li>
+          </ul>
+        </div>
+      </nav>
+
+      <h4>Documentation</h4>
+
+      <h5>MongoBridge webtask</h5>
+      <p>
+        MongoBridge is a demo <a href="https://webtask.io/" target="_blank">WebTask</a>
+        which connects to a MongoDB server and exposes methods to query the database.
+        It provides an easy a convenient syntax to query the database. A javascript client can
+        be found too.
+      </p>
+
+      <p>
+        MongoBridge aids during the creation of SPA by separating all database access to a webtask.
+      </p>
+
+      <h5>MongoDB and WebTask setup</h5>
+      <p>In every new deployment you need to create a new collection named <strong>mongoBridgeSettings</strong></p>
+      <div class="example">
+        <pre>
+
+          db.createCollection('mongoBridgeSettings')
+        </pre>
+      </div>
+
+      <p>
+        Once the collection is created you can setup rights to your collections as specified in the
+        <a href="#security">Security section</a>.
+      </p>
+
+      <p>
+        You need to provide the MongoDB connection url to the webtask.
+        You can do so by
+      </p>
+
+
+      <h5 id="security">Security</h5>
+      <p>MongoBridge has a basic rights control over collections. Every collections exposed by MongoBridge
+        have different access methods available.</p>
+
+      <p>The easyest way to modify permissions on a collection is using the MongoBridgeClient:</p>
+
+      <div class="example">
+        <pre>
+
+          MongoBridgeClient.allow('users', ['find', 'findOne', 'insert'])
+        </pre>
+      </div>
+      <p> The previous command will grant permissions to execute the methods find,
+        findOne and insert on the users collection.</p>
+
+      <div class="example">
+        <pre>
+
+          MongoBridgeClient.deny('users', ['remove', 'insert'])
+        </pre>
+      </div>
+      <p>The previous command will remove permissions to execute the methods remove and insert
+        on the users collection.</p>
+
+
+      <h5>Supported functionality</h5>
+      <p>
+        Currently MongoBridge supports only operations on collections.
+        The following methods are currently supported by MongoBridge:
+      </p>
+      <ul>
+        <li>find</li>
+        <li>findeOne</li>
+        <li>insert</li>
+        <li>update</li>
+        <li>remove</li>
+      </ul>
+
+      <p>All the native Node.js MongoDB methods which return a cursor are automatically returning an array
+        in MongoBridge. Cursors functionality (as skip, limit, max, etc) is not yet supported but it is easy
+        to add in to the WebTask by providing another object in the POST request indicating the vector
+        operations.
+      </p>
+
+      <h5>MongoBridgeClient</h5>
+      <p>
+        The MongoBridgeClient is a simple javascript library which allows to query MongoDB in the browser
+        in a similar way as you do on the native MongoDB Node.js native driver. You can find the code
+        <a href="js/mongoBridgeClient.js" target="_blank">here</a>.
+      </p>
+
+      The first step is to initialize the client in this way:
+      <div class="example">
+        <pre>
+
+          MongoBridgeClient.initialize('http://localhost:3000');
+        </pre>
+      </div>
+
+      After this you can start querying your database as usual:
+      <div class="example">
+        <pre>
+
+  MongoBridgeClient.collection("users").find({
+    age: {"$gte": 25}
+  });
+
+
+  MongoBridgeClient.collection("users").insert({
+    name: "John",
+    lastName: "Brown",
+    email: "johnBrown@nodomain.com",
+    age: 31
+  });
+
+  MongoBridgeClient.collection("users").update({
+    _id: "57a73936d14cfe8bfa8849ff57a73936d14cfe8bfa8849ff"
+  }, {
+    $set: {
+      email: "johnBrown@differentdomain.com"
+    }
+  });
+
+  MongoBridgeClient.collection("users").remove({
+    email: "johnBrown@nodomain.com"
+  });
+        </pre>
+      </div>
+
+      <h5>WebTask request query syntax</h5>
+      <p>
+        The MongoBridge Webtask demo has been designed to provide a syntax as
+        close as possible to the
+        <a target="_blank" href="http://mongodb.github.io/node-mongodb-native/">Node.js MongoDB driver.</a>
+      </p>
+
+      <p>You can query MongoBridge with a similar syntax to the one from the native client. The main difference
+        is that the parameters are set in an array on the post request.</p>
+
+      <p>The ajax request to query the mongo would look like this:</p>
+      <div class="example">
+        <pre>
+
+  $.ajax({
+    url: mongoBridgeWebApiUrl + '/query',
+    method: 'POST',
+    contentType: 'application/json',
+    data: JSON.stringify({ params: queryParameters })
+  });
+      </pre>
+      </div>
+
+        <p>Where the <strong>queryParameters</strong> have the following shape:</p>
+
+        <div class="example">
+          <div class="old">
+            <span class="title">Node.js MongoDB driver</span>
+            <pre>db.collection("users").find({name: "Jack", lastName: "the Ripper"})</pre>
+          </div>
+          <div class="new">
+            <span class="title">MongoBridge POST query parameters</span>
+            <pre>["users", "find", {name: "Jack", lastName: "the Ripper"}]</div>
+        </div>
+
+        <p>Projections or other options are supported as well:</p>
+
+        <div class="example">
+          <div class="old">
+            <span class="title">Node.js MongoDB driver</span>
+            <pre>db.collection("users").find(
+  {name: "Jack", lastName: "the Ripper"},
+  {victims: 1, nationality: 1})
+            </pre>
+          </div>
+          <div class="new">
+            <span class="title">MongoBridge POST query parameters</span>
+            <pre>["users", "find",
+    {name: "Jack", lastName: "the Ripper"},
+    {victims: 1, nationality: 1}]
+            </div>
+        </div>
+
+        <h5>Future improvements</h5>
+        The next features to be included are:
+        <ul>
+          <li>MongoDB cursors functionality</li>
+          <li>Authentication via Auth0 and improved permissions model based on user types</li>
+        </ul>
+    </div>
+</body>
+</html>

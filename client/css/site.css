@@ -1,0 +1,48 @@
+.space {
+  padding: 2em;
+}
+
+.space-s {
+  padding: 1em;
+}
+
+button.centerButton {
+  text-align: center;
+  margin-left: auto;
+  margin-right: auto;
+  display: block;
+}
+
+.container nav .brand-logo {
+  margin-left: 1em;
+}
+
+p.light-text {
+  font-weight: 300;
+}
+
+.example {
+  background-color: #ffffc7;
+}
+
+.example .old, .example .new {
+  padding: 0.2em 2em;
+}
+
+.example pre {
+  margin: 0em;
+  font-weight: bold;
+}
+
+.example .title {
+  font-style: italic;
+}
+
+.documentation ul li {
+  list-style: disc;
+  margin-left: 2em;
+}
+
+.documentation nav ul li {
+  list-style: none;
+}

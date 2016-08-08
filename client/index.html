@@ -1,0 +1,112 @@
+<html>
+<head>
+  <title>MongoBridge webtask client</title>
+ <link rel="stylesheet" href="css/site.css">
+ <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/materialize/0.97.7/css/materialize.min.css">
+ <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+ <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.1.0/jquery.min.js"></script>
+ <script src="https://cdnjs.cloudflare.com/ajax/libs/knockout/3.4.0/knockout-min.js"></script>
+ <script src="https://cdnjs.cloudflare.com/ajax/libs/knockout.mapping/2.4.1/knockout.mapping.min.js"></script>
+ <script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/0.97.7/js/materialize.min.js"></script>
+ <script src="js/mongoBridgeClient.js"></script>
+ <script src="js/inspector.js"></script>
+</head>
+<body>
+    <div class="container">
+      <nav>
+        <div class="nav-wrapper blue-grey">
+          <a href="index.html" class="brand-logo">MongoBridge demo</a>
+          <ul id="nav-mobile" class="right hide-on-med-and-down">
+            <li><a href="documentation.html">Documentation</a></li>
+          </ul>
+        </div>
+      </nav>
+
+      <p class="light-text">
+        This is a demo page to test some of the functionality of the MongoBridge
+        <a href="https://webtask.io/" target="_blank">WebTask</a>.
+      </p>
+
+      <p class="light-text">Please read the <a href="documentation.html">documentation</a> for more details.
+      </p>
+
+      <h4>1. Select collection and method</h4>
+
+      <div id="queryTool">
+        <div class="card darken-1 space-s">
+          <div class="row">
+            <div class="input-field col s12 m4 l2">
+             <select data-bind="options: collections, value: selectedCollection"></select>
+             <label>Collection</label>
+            </div>
+            <div class="input-field col s12 m4 l2">
+             <select data-bind="options: methods, value: selectedMethod"></select>
+             <label>Method</label>
+            </div>
+          </div>
+        </div>
+
+        <h4>2. Set parameters</h4>
+        <div>
+          <p class="light-text">Add as many parameters as required for the previous method</p>
+        </div>
+        <div class="card darken-1 space">
+          <div class="row">
+            <h5 class="col s9 m8 l6">Parameters</h5>
+            <div class="col s2 l2">
+              <a data-bind="click: addParameter" class="btn-floating btn-large waves-effect waves-light red"><i class="material-icons">add</i></a>
+            </div>
+          </div>
+          <div data-bind="foreach: parameters">
+            <div class="row">
+              <div class="input-field col s5 m4 l3">
+                <input placeholder="Field name" type="text" data-bind="value: name">
+                <label>Field</label>
+              </div>
+              <div class="input-field col s4 m4 l3">
+                <input placeholder="Field value" type="text" data-bind="value: value">
+                <label>Field</label>
+              </div>
+              <div class="col s1">
+                <a data-bind="click: remove" class="btn-floating btn-large waves-effect waves-light red"><i class="material-icons">delete</i></a>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <h4>3. Run!</h4>
+
+        <div>
+          <button data-bind="click: executeQuery" class="centerButton btn waves-effect waves-light" type="submit" name="action">Execute query
+            <i class="material-icons right">send</i>
+          </button>
+        </div>
+
+        <p class="light-text">You can execute the following command in your browser javascript console:</p>
+        <div class="card black grey-text text-lighten-2">
+          <pre><p class="space-s" data-bind="text: commandString"></p></pre>
+        </div>
+
+        <!-- ko if: lastExecution -->
+        <h5>Last execution results</h5>
+
+        <div class="card yellow lighten-5">
+          <pre>
+            <div data-bind="text: lastExecution"></div>
+          </pre>
+        </div>
+        <!-- /ko -->
+      </div>
+    </div>
+
+  <script>
+    //var url = "https://webtask.it.auth0.com/api/run/wt-santiagorp-gmail_com-0/mongoBridge";
+    var url = "http://localhost:3000";
+    //var url = "http://localhost:8080";
+    MongoBridgeClient.initialize(url);
+    var inspectorModel = new InspectorModel();
+    inspectorModel.initialize();
+    ko.applyBindings(inspectorModel, $("#queryTool")[0]);
+  </script>
+</body>
+</html>

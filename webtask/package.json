@@ -1,0 +1,21 @@
+{
+  "name": "mongoBridge",
+  "version": "1.0.0",
+  "main": "server.js",
+  "scripts": {
+    "bundle": "wt-bundle webtask.js --output ./build/webtask.js",
+    "deploy": "wt create ./build/webtask.js --name mongoBridge",
+    "start": "node server.js"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "body-parser": "^1.15.2",
+    "express": "^4.12.0",
+    "mongodb": "^2.2.5",
+    "webtask-tools": "^1.3.0"
+  },
+  "devDependencies": {},
+  "description": ""
+}
