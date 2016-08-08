@@ -1,10 +1,10 @@
-# MongoBridge Webtask
+# MongoBridge webtask
 
-MongoBridge is a demo WebTask which connects to a MongoDB server and exposes methods to query the database. It provides an easy a convenient syntax to query the database. A javascript client can be found too.
+MongoBridge is a demo webtask which connects to a MongoDB server and exposes methods to query the database. It provides an easy a convenient syntax to query the database. A javascript client can be found too.
 
 MongoBridge aids during the creation of SPA by separating all database access to a webtask.
 
-### MongoDB and WebTask setup
+### MongoDB and webtask setup
 In every new deployment you need to create a new collection named mongoBridgeSettings
 
 ```js
@@ -38,7 +38,7 @@ Currently MongoBridge supports only operations on collections. The following met
 - update
 - remove
 
-All the native Node.js MongoDB methods which return a cursor are automatically returning an array in MongoBridge. Cursors functionality (as skip, limit, max, etc) is not yet supported but it is easy to add in to the WebTask by providing another object in the POST request indicating the vector operations.
+All the native Node.js MongoDB methods which return a cursor are automatically returning an array in MongoBridge. Cursors functionality (as skip, limit, max, etc) is not yet supported but it is easy to add in to the webtask by providing another object in the POST request indicating the vector operations.
 
 ### MongoBridgeClient
 The MongoBridgeClient is a simple javascript library which allows to query MongoDB in the browser in a similar way as you do on the native MongoDB Node.js native driver. You can find the code here.
@@ -73,8 +73,8 @@ After this you can start querying your database as usual:
    email: "johnBrown@nodomain.com"
  });
 ```
-### WebTask request query syntax
-The MongoBridge Webtask demo has been designed to provide a syntax as close as possible to the Node.js MongoDB driver.
+### webtask request query syntax
+The MongoBridge webtask demo has been designed to provide a syntax as close as possible to the Node.js MongoDB driver.
 
 You can query MongoBridge with a similar syntax to the one from the native client. The main difference is that the parameters are set in an array on the post request.
 
