@@ -1,5 +1,4 @@
 var express = require('express');
-var ObjectID = require('mongodb').ObjectID;
 var assert = require('assert');
 var bodyParser = require('body-parser');
 var conn = require('./helpers/mongoConnection');
