@@ -12,7 +12,13 @@ db.createCollection('mongoBridgeSettings')
 ```
 Once the collection is created you can setup rights to your collections as specified in the Security section.
 
-You need to provide the MongoDB connection url to the webtask. You can do so by
+You need to provide the MongoDB connection url to the webtask. You can do so by specifying it as a secret during the webtask creation:
+
+ 1. Bundle your code:
+ > wt-bundle webtask.js --output ./build/webtask.js
+ 2. Deploy the webtask:
+ > wt create ./build/webtask.js --name mongoBridge --secret DB_URL="<your_mongo_db_url>"
+
 
 ### Security
 MongoBridge has a basic rights control over collections. Every collections exposed by MongoBridge have different access methods available.
