@@ -4,7 +4,7 @@
   "main": "server.js",
   "scripts": {
     "bundle": "wt-bundle webtask.js --output ./build/webtask.js",
-    "deploy": "wt create ./build/webtask.js --name mongoBridge",
+    "deploy": "wt create ./build/webtask.js --name mongoBridge --secret DB_URL=\"${DB_URL}\"",
     "start": "node server.js"
   },
   "keywords": [],

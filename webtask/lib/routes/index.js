@@ -3,7 +3,6 @@ var ObjectID = require('mongodb').ObjectID;
 var router = express.Router();
 var rightsHelper = require('../helpers/rightsHelper');
 var requestHelper = require('../helpers/requestHelper');
-var conn = require('../helpers/mongoConnection');
 
 var app = express();
 
@@ -11,7 +10,7 @@ var app = express();
  * Get an array with the name of the available collections on the server
  */
 router.get('/collections', function(req, res) {
-  conn.db.command({listCollections: 1}, function(err, data) {
+  req.db.command({listCollections: 1}, function(err, data) {
     if (err) throw data;
     var result = data.cursor.firstBatch.map(function(x) {
       return x.name;
@@ -57,7 +56,8 @@ router.use('/query', function(req, res, next) {
     if (!hasPermissions) {
       throw("No rights");
     }
-    var col = conn.db.collection(colName);
+    console.log("Invoking " + colName + "." + method + JSON.stringify(params));
+    var col = req.db.collection(colName);
     col[method].apply(col, params);
   });
 });

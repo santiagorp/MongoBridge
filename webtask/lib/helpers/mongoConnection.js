@@ -1,32 +1,24 @@
 var MongoClient = require('mongodb').MongoClient;
 
-var Conn = function() {
-  this.url = null;
-  this.db = null;
-};
+module.exports = function(initUri, opts) {
+  var connection;
+  opts = opts || {};
 
-/**
- * Initialize the database connection with the specified url
- * @param {string} url - The url of the mongo connection (contains the database name as well)
- */
-Conn.prototype.initialize = function(url) {
-  var self = this;
-  console.log("Connecting to " + url);
-  return new Promise(function(resolve, reject) {
-    if (self.db) {
-      return resolve(self.db);
+  return function mongoDBConn(req, res, next) {
+    var url = initUri || req.webtaskContext.secrets.DB_URL;
+    if (!connection) {
+      console.log("Connecting to DB...");
+      connection = MongoClient.connect(url, opts);
     }
 
-    MongoClient.connect(url, function(err, db) {
-      if (err) {
-        return reject(err);
-      }
-
-      console.log("Connected to MongoDB!");
-      self.db = db;
-      return resolve(db);
+    connection.then(function(db) {
+      console.log("DB connection: OK");
+      req.db = db;
+      next();
+    }).catch(function(err) {
+      console.log("ERROR: NOT connected!");
+      connection = undefined;
+      next(err);
     });
-  });
-};
-
-module.exports = new Conn();
+  }
+}

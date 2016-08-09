@@ -116,6 +116,9 @@ MongoBridgeClient = (function() {
         },
         remove: function() {
           parseAndInvoke(colName, 'remove', arguments);
+        },
+        removeOne: function() {
+          parseAndInvoke(colName, 'removeOne', arguments);
         }
       };
     }

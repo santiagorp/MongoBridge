@@ -1,6 +1,5 @@
 var express = require('express');
 var router = express.Router();
-var conn = require('../helpers/mongoConnection');
 var rightsHelper = require('../helpers/rightsHelper');
 var requestHelper = require('../helpers/requestHelper');
 
@@ -12,7 +11,7 @@ router.get('/:collection', function(req, res) {
   if (!colName) {
     return res.json([]);
   }
-  conn.db.collection('mongoBridgeSettings').findOne({collectionName: colName}, function(err, data) {
+  req.db.collection('mongoBridgeSettings').findOne({collectionName: colName}, function(err, data) {
     var allow = data && data.allow ? data.allow : [];
     res.json(allow);
   });
@@ -34,7 +33,7 @@ router.use('/:collection/allow', function(req, res, next) {
       return rightsHelper.validMethods.indexOf(x) >= 0;
     });
 
-    conn.db.collection('mongoBridgeSettings').update(
+    req.db.collection('mongoBridgeSettings').update(
       {collectionName: colName},
       {$addToSet: {
         allow: { $each: parsed }
@@ -43,8 +42,12 @@ router.use('/:collection/allow', function(req, res, next) {
         upsert: true,
       },
       function(err, data) {
-        rightsHelper.reloadPermissions(true);
-        res.json(data);
+        rightsHelper.reloadPermissions(req.db, true)
+        .then(function(permissions) {
+          res.json(data);
+        }).catch(function(err){
+          next(err);
+        });
       }
     );
   });
@@ -62,14 +65,18 @@ router.use('/:collection/deny', function(req, res, next) {
     if (!colName || !methods || !(methods instanceof Array))
       throw("Error");
 
-    conn.db.collection('mongoBridgeSettings').update(
+    req.db.collection('mongoBridgeSettings').update(
       {collectionName: colName},
       {$pullAll: {
         allow: methods
       }},
       function(err, data) {
-        rightsHelper.reloadPermissions(true);
-        res.json(data);
+        rightsHelper.reloadPermissions(req.db, true)
+        .then(function(permissions) {
+          res.json(data);
+        }).catch(function(err){
+          next(err);
+        });
       }
     );
   });

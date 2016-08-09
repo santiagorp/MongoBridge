@@ -1,4 +1,9 @@
 module.exports = {
+  /**
+   * This method checks if we are running from a webtask and returns the request body.
+   * Somehow the router.post('/myMethod') are not being invoked when running from a webtask,
+   * so we have to use router.use('/mymethod') and invoke to this helper function.
+   */
   processPOST: function(req, res, next) {
     return new Promise(function(resolve, reject) {
       if (req.method == 'OPTIONS') {
