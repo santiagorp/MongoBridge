@@ -8,37 +8,37 @@ var rightsRoutes = require('./routes/rights');
 
 var app = express();
 
-// Initialize DB
-//var url = 'mongodb://localhost:27017/rmongo';
-var url = 'mongodb://mongobridgeuser:mongobridgepasswd@ds145385.mlab.com:45385/santiagorp_mongotest';
-conn.initialize(url, function(err, data) {
-  if (err) throw("Error connecting to mongo DB");
-  console.log("Connected to mongoDB!");
-  rightsHelper.reloadPermissions();
-});
+var myMongoURL = ''; // Your mongoDB connection here!
+var dbURL = myMongoURL || process.env.DB_URL;
+if (!dbURL) {
+  throw("Error: DB connection url not found!");
+}
 
-// Initialize CORS
-app.use(function (req, res, next) {
-    res.setHeader('Access-Control-Allow-Origin', '*');
-    res.setHeader('Access-Control-Allow-Methods', 'GET, POST, OPTIONS, PUT, PATCH, DELETE');
-    res.setHeader('Access-Control-Allow-Headers', 'X-Requested-With,content-type');
-    res.setHeader('Access-Control-Allow-Credentials', true);
-    next();
-});
+conn.initialize(dbURL)
+.then(rightsHelper.reloadPermissions.bind(rightsHelper))
+.then(function() {
+  console.log("Setting up server...");
 
-// Setup JSON parser
-app.use(bodyParser.json());
-app.use(bodyParser.urlencoded({ extended: true }));
+  // Initialize CORS
+  app.use(function (req, res, next) {
+      console.log(req.method + " to " + req.url);
+      res.setHeader('Access-Control-Allow-Origin', '*');
+      res.setHeader('Access-Control-Allow-Methods', 'GET, POST, OPTIONS, PUT, PATCH, DELETE');
+      res.setHeader('Access-Control-Allow-Headers', 'X-Requested-With,content-type');
+      res.setHeader('Access-Control-Allow-Credentials', true);
+      next();
+  });
 
-// Router
-app.use('/', routes);
-app.use('/rights', rightsRoutes);
+  // Router
+  app.use('/', routes);
+  app.use('/rights', rightsRoutes);
 
-// Catch 404 and forward to error handler
-app.use(function(req, res, next) {
-  var err = new Error('Not Found');
-  err.status = 404;
-  next(err);
+  // Catch 404 and forward to error handler
+  app.use(function(req, res, next) {
+    var err = new Error('Not Found');
+    err.status = 404;
+    next(err);
+  });
 });
 
 module.exports = app;

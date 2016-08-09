@@ -4,7 +4,6 @@ var app = require('./lib');
 var server = express();
 var port = process.env.PORT || 3000;
 
-
 server.use(mockWebtaskContext);
 server.use(app);
 

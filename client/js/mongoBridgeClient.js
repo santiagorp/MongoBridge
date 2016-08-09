@@ -12,9 +12,9 @@ MongoBridgeClient = (function() {
    */
   function parseAndInvoke(colName, method, args) {
     var argsArray = Array.prototype.slice.call(args);
-    let last = argsArray.pop();
+    var last = argsArray.pop();
     var params = [colName, method].concat(argsArray);
-    let callback = null;
+    var callback = null;
     if (typeof last == "function") {
       callback = last;
     } else {
