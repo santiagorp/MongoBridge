@@ -46,3 +46,7 @@ p.light-text {
 .documentation nav ul li {
   list-style: none;
 }
+
+.documentation h5 {
+  margin: 2em 0em 1em 0em;
+}

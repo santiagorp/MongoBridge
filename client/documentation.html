@@ -24,7 +24,20 @@
 
       <h4>Documentation</h4>
 
-      <h5>MongoBridge webtask</h5>
+      <h5>Contents</h5>
+
+      <ol>
+        <li><a href="#intro">Description: MongoBridge webtask<a></li>
+        <li><a href="#setup">Setup</a></li>
+        <li><a href="#security">Security</a></li>
+        <li><a href="#functionality">Supported functionality</a></li>
+        <li><a href="#client">Mongo bridge client</a></li>
+        <li><a href="#syntax">Webtask request query syntax</a></li>
+        <li><a href="#todo">Future improvements</a></li>
+
+      </ol>
+
+      <h5 id="intro">1. Description: MongoBridge webtask</h5>
       <p>
         MongoBridge is a demo <a href="https://webtask.io/" target="_blank">webtask</a>
         which connects to a MongoDB server and exposes methods to query the database.
@@ -36,7 +49,7 @@
         MongoBridge aids during the creation of SPA by separating all database access to a webtask.
       </p>
 
-      <h5>MongoDB and webtask setup</h5>
+      <h5 id="setup">2. Setup</h5>
       <p>In every new deployment you need to create a new collection named <strong>mongoBridgeSettings</strong></p>
       <div class="example">
         <pre>
@@ -51,12 +64,24 @@
       </p>
 
       <p>
-        You need to provide the MongoDB connection url to the webtask.
-        You can do so by
-      </p>
+        You need to provide the MongoDB connection url to the webtask. You can do so by specifying it as a secret during the webtask creation:
+      <p/>
+      Bundle your code:
+      <div class="example">
+        <pre>
 
+          wt-bundle webtask.js --output ./build/webtask.js
+        </pre>
+      </div>
+      Deploy the webtask:
+      <div class="example">
+        <pre>
 
-      <h5 id="security">Security</h5>
+          wt create ./build/webtask.js --name mongoBridge --secret DB_URL="your_mongo_db_url"
+        </pre>
+      </div>
+
+      <h5 id="security">3. Security</h5>
       <p>MongoBridge has a basic rights control over collections. Every collections exposed by MongoBridge
         have different access methods available.</p>
 
@@ -81,7 +106,7 @@
         on the users collection.</p>
 
 
-      <h5>Supported functionality</h5>
+      <h5 id="functionality">4. Supported functionality</h5>
       <p>
         Currently MongoBridge supports only operations on collections.
         The following methods are currently supported by MongoBridge:
@@ -100,7 +125,7 @@
         operations.
       </p>
 
-      <h5>MongoBridgeClient</h5>
+      <h5 id="client">5. MongoBridgeClient</h5>
       <p>
         The MongoBridgeClient is a simple javascript library which allows to query MongoDB in the browser
         in a similar way as you do on the native MongoDB Node.js native driver. You can find the code
@@ -145,7 +170,7 @@
         </pre>
       </div>
 
-      <h5>webtask request query syntax</h5>
+      <h5 id="syntax">6. Webtask request query syntax</h5>
       <p>
         The MongoBridge webtask demo has been designed to provide a syntax as
         close as possible to the
@@ -198,7 +223,7 @@
             </div>
         </div>
 
-        <h5>Future improvements</h5>
+        <h5 id="todo">7. Future improvements</h5>
         The next features to be included are:
         <ul>
           <li>MongoDB cursors functionality</li>
